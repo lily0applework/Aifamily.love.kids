@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- [新增] 關鍵字 -->
+    <meta name="keywords" content="壽星優惠, 高雄餐廳, 台南餐廳, 生日優惠, 壽星好康, 高雄美食, 台南美食, AI親子成長屋">
+
+    <!-- [新增] 社群預覽（Facebook / LINE / IG 分享時會用這些資訊） -->
+    <meta property="og:title" content="高雄及台南壽星優惠地圖 🎂 最新2025優惠懶人包">
+    <meta property="og:description" content="全台最實用的壽星優惠地圖！快速查詢高雄與台南各大餐廳壽星折扣、買一送一與免費好康，由 AI親子成長屋製作。">
+    <!-- 注意：這個圖片連結需要是公開可存取的網址 -->
+    <meta property="og:image" content="https://isafann54.github.io/images/birthday_map_preview.png"> 
+    <meta property="og:url" content="https://isafann54.github.io"> <!-- 建議換成你這個地圖的最終網址 -->
+    <meta property="og:type" content="website">
+
+    <!-- [修改] 更新標題 -->
+    <title>🎂 高雄及台南壽星優惠地圖 | AI親子成長屋</title>
+
+    <!-- [新增] Google Analytics 追蹤碼 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FBJCTQX5YE"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FBJCTQX5YE');
+    </script>
+    
+    <!-- 載入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 載入 Leaflet 地圖 CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+    <!-- 載入 Leaflet 地圖 JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+     
+    <style>
+        /* 為地圖容器設定一個明確的高度 */
+        #map { 
+            height: 100%; 
+            width: 100%;
+            z-index: 10;
+        }
+        
+        /* --- [修改] 自訂彈出視窗樣式 (莫蘭迪黃色系) --- */
+        .leaflet-popup-content-wrapper {
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .leaflet-popup-content {
+            margin: 18px;
+            font-family: 'Inter', sans-serif;
+            min-width: 300px;
+        }
+        .leaflet-popup-content h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #9a3412; /* 更改為深橘色 (orange-800) */
+            border-bottom: 2px solid #fcd34d; /* 更改為淺琥珀色 (amber-300) */
+            padding-bottom: 6px;
+        }
+        .leaflet-popup-content h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #7c2d12; /* 更改為更深的橘色 (orange-900) */
+            margin: 8px 0 4px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .leaflet-popup-content ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        .leaflet-popup-content li {
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            padding-left: 1.6em;
+            position: relative;
+            color: #374151; 
+            line-height: 1.5;
+        }
+        /* 餐廳優惠的圖示 */
+        .restaurant-offer::before {
+            content: '🎂'; /* 蛋糕圖示 */
+            position: absolute;
+            left: 0;
+            top: 2px;
+            font-size: 1.1em;
+        }
+        /* 最佳優惠的特殊標記 */
+        .top-offer::before {
+            content: '⭐'; /* 星星圖示 */
+            position: absolute;
+            left: 0;
+            top: 2px;
+            font-size: 1.1em;
+        }
+        
+        /* --- 圖例樣式 (維持不變) --- */
+        .legend {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            z-index: 1000;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .legend-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .legend-text {
+            font-size: 0.85rem;
+            color: #374151;
+        }
+    </style>
+    <!-- 載入 Noto Sans TC 字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<!-- [修改] 更改背景色為淺琥珀色 (amber-50) -->
+<body class="bg-amber-50 font-[Noto Sans TC, Inter, sans-serif] flex flex-col h-screen">
+
+    <!-- 頁首 -->
+    <header class="bg-white shadow-lg z-20">
+        <!-- [修改] 頂部通知欄 (更改為琥珀色漸層) -->
+        <div class="bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 px-4 sm:px-6 lg:px-8 text-center font-semibold z-25">
+            ⭐ 本地圖已標註折扣力度最大的優惠 (5折、半價或免費)，詳見圖例 ⭐
+        </div>
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-5">
+            <!-- [修改] 更改標題顏色 -->
+            <h1 class="text-2xl sm:text-3xl font-bold text-orange-900 text-center">
+                高雄及台南壽星優惠地圖
+                <span class="text-base font-normal text-gray-500 ml-2 align-middle">By AI親子成長屋</span>
+            </h1>
+            <!-- [修改] 更改副標題顏色 -->
+            <p class="text-center text-gray-600 mt-1"> <span class="text-orange-700 font-semibold">(2025年最新資訊)</span></p>
+        </div>
+    </header>
+
+    <!-- 地圖容器 (flex-grow 讓他填滿空間) -->
+    <main class="flex-grow">
+        <div id="map"></div>
+    </main>
+
+    <!-- 頁尾：版權 & 社群按鈕 -->
+    <footer class="bg-white shadow-inner z-20 py-8 border-t border-gray-200">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                
+                <!-- [新增] Logo 和版權聲明 (合併) -->
+                <div class="flex items-center text-center md:text-left mb-4 md:mb-0">
+                    <!-- Logo -->
+                    <img src="logo.jpg" alt="AI親子成長屋 Logo" class="w-12 h-12 rounded-full shadow-md mr-4 hidden md:block"
+                         onerror="this.style.display='none'"> <!-- 電腦版顯示 -->
+                    
+                    <!-- 版權文字 -->
+                    <div>
+                        <p class="text-sm text-gray-600">
+                            © 2025 AI親子成長屋. All rights reserved.
+                        </p>
+                        <p class="text-xs text-gray-400 mt-1">
+                            地圖資訊僅供參考，請以店家實際公告為準。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 社群分享按鈕 -->
+                <div class="flex items-center space-x-5">
+                    <span class="text-sm text-gray-600 hidden sm:block">追蹤我們粉絲團看更多AI工具應用</span>
+                    <a href="https://www.facebook.com/profile.php?id=61579308823985" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook" class="text-gray-400 hover:text-blue-600 transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14C17.17 2.09 16.1 2 15 2c-2.46 0-4 1.4-4 4v2.5H8v4h3v9.5h3V13.5z"></path></svg>
+                    </a>
+                    <a href="https://www.instagram.com/aifamily0708?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" aria-label="Share on Instagram" class="text-gray-400 hover:text-pink-600 transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.148 3.227-1.669 4.771-4.919 4.919-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.07-1.646-.07-4.85s.012-3.584.07-4.85c.148-3.227 1.669 4.771 4.919 4.919.058-1.265.07-1.646.07-4.85zm0 1.44c-3.118 0-3.48.012-4.69.068-2.6.118-3.92.788-4.37 4.37-.056 1.21-.068 1.572-.068 4.69s.012 3.48.068 4.69c.118 2.6.788 3.92 4.37 4.37 1.21.056 1.572.068 4.69.068s3.48-.012 4.69-.068c2.6-.118 3.92-.788 4.37-4.37.056 1.21.068 1.572.068-4.69s-.012-3.48-.068-4.69c-.118-2.6-.788-3.92-4.37-4.37-1.21-.056-1.572.068-4.69-.068zm0 5.838a5.162 5.162 0 100 10.324 5.162 5.162 0 000-10.324zm0 1.44a3.722 3.722 0 110 7.444 3.722 3.722 0 010-7.444zm6.406-3.305a1.2 1.2 0 100 2.4 1.2 1.2 0 000-2.4z"></path></svg>
+                    </a>
+                    <a href="https://www.youtube.com/@aifamily0708" target="_blank" rel="noopener noreferrer" aria-label="Share on YouTube" class="text-gray-400 hover:text-red-600 transition-colors duration-200">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M21.58 7.19C21.34 6.3 20.7 5.66 19.81 5.42C18.25 5 12 5 12 5C12 5 5.75 5 4.19 5.42C3.3 5.66 2.66 6.3 2.42 7.19C2 8.75 2 12 2 12C2 12 2 15.25 2.42 16.81C2.66 17.7 3.3 18.34 4.19 18.58C5.75 19 12 19 12 19C12 19 18.25 19 19.81 18.58C20.7 18.34 21.34 17.7 21.58 16.81C22 15.25 22 12 22 12C22 12 22 8.75 21.58 7.19ZM9.75 15.5V8.5L15.75 12L9.75 15.5Z"></path></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 地圖初始化腳本 -->
+    <script>
+        // --- 1. 初始化地圖 ---
+        const map = L.map('map').setView([23.1, 120.45], 9); 
+
+        // --- 2. 加入圖磚圖層 ---
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // --- 3. 壽星優惠餐廳資料 (已篩選，只保留高雄/台南) ---
+        const locations = [
+            // === 高雄地區 ===
+            { name: '碳佐麻里燒肉 (高雄美術館店)', coords: [22.673, 120.292], offer: '當日壽星出示證件享慶生服務、生日禮物、生日蛋糕、精緻小菜和飲品。', discount: '服務+禮物', isTopDeal: false },
+            { name: '老四川巴蜀麻燙 (高雄中山店)', coords: [22.637, 120.301], offer: '壽星優惠依分店現場公告為主，建議電話確認。', discount: '遊戲轉盤', isTopDeal: false },
+            { name: '漢來海港餐廳 (高雄漢來本館)', coords: [22.628, 120.288], offer: '當日壽星平日8折、假日85折（加10%服務費）。', discount: '8-8.5折', isTopDeal: false },
+            { name: '饗食天堂 (高雄三多店)', coords: [22.614, 120.304], offer: 'iEAT會員當月壽星享96折優惠券。', discount: '96折', isTopDeal: false },
+            { name: '夏慕尼鐵板燒 (高雄五福店)', coords: [22.628, 120.306], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
+            { name: '王品牛排 (高雄博愛店)', coords: [22.651, 120.301], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
+            { name: '陶板屋 (高雄中山店)', coords: [22.621, 120.301], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
+            { name: '西堤牛排 (高雄中山店)', coords: [22.621, 120.301], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
+            { name: '鼎泰豐 (高雄巨蛋店)', coords: [22.669, 120.302], offer: '壽星當日用餐享免費甜點或折扣。(依門市當日狀況為主)', discount: '免費甜點', isTopDeal: false },
+            { name: '瓦城泰國料理 (高雄夢時代店)', coords: [22.595, 120.307], offer: '會員當月壽星享專屬優惠券。', discount: '優惠券', isTopDeal: false },
+            { name: '乾杯燒肉 (高雄中山店)', coords: [22.626, 120.301], offer: '壽星當月/當日用餐可能贈送免費甜點或飲品。', discount: '免費甜點', isTopDeal: false },
+            { name: '海底撈 (高雄巨蛋店)', coords: [22.669, 120.302], offer: '壽星當日用餐享慶生服務、甜點或小禮物。無固定折扣。', discount: '慶生服務', isTopDeal: false },
+            { name: '肉多多火鍋 (高雄三多店)', coords: [22.614, 120.305], offer: 'APP會員當月壽星享「生日肉蛋糕」一份 (需提前預訂)。', discount: '肉蛋糕', isTopDeal: false },
+            { name: 'IKEA (高雄店)', coords: [22.597, 120.306], offer: 'IKEA卡會員當月壽星享「主餐第二道半價」優惠券。', discount: '第二道半價 (約25%)', isTopDeal: false },
+            { name: '唐吉訶德 (高雄大立店)', coords: [22.624, 120.297], offer: 'APP會員生日禮「滿額折抵」優惠券 (全台門市適用)。', discount: '滿額折抵', isTopDeal: false },
+            { name: '敝姓鍋 (高雄左營店)', coords: [22.678, 120.311], offer: '當月壽星消費滿額，贈「生日祝福拼盤」。(詳情請洽門市)', discount: '祝福拼盤', isTopDeal: false },
+            { name: '嗑肉石鍋 (高雄)', coords: [22.640, 120.300], offer: '生日魔法卡享受壽星大餐優惠。', discount: '魔法卡', isTopDeal: false },
+            { name: '傑克兄弟牛排館 (高雄)', coords: [22.630, 120.295], offer: '生日牛排半價優惠。', discount: '半價 (50%)', isTopDeal: true, rank: 3 },
+            { name: '聚日式鍋物 (高雄)', coords: [22.620, 120.310], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
+            { name: '小蒙牛頂級麻辣養生鍋 (高雄)', coords: [22.610, 120.305], offer: '壹星優惠，週週抽獎。', discount: '壹星優惠', isTopDeal: false },
+            { name: '福容大飯店 (高雄店)', coords: [22.650, 120.290], offer: '當月壽星入住景觀套房贈紅酒、蛋糕等多項生日禮物。', discount: '住房禮遇', isTopDeal: false },
+            { name: '薄多義 (高雄文橫店)', coords: [22.6282, 120.3150], offer: '当月壽星「幾歲送幾隻雞翅」，需提前3天以上電話預訂，限4人以上(或達低消)。', discount: '雞翅 (100%+)', isTopDeal: true, rank: 2 },
+            { name: '千葉火鍋 (高雄大昌店)', coords: [22.6453, 120.3283], offer: '当月壽星持「享味卡」享5折優惠，一般會員享85折。', discount: '5折 (需持卡)', isTopDeal: true, rank: 3 },
+            { name: '福勝亭 (高雄楠梓店)', coords: [22.721, 120.312], offer: '【APP會員】當月壽星享「鮮嫩炸雞柳定食套餐」買一送一。 (優惠至隔月底)', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '福勝亭 (高雄五甲店)', coords: [22.601, 120.330], offer: '【APP會員】當月壽星享「鮮嫩炸雞柳定食套餐」買一送一。 (優惠至隔月底)', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '福勝亭 (高雄鳳山店)', coords: [22.626, 120.354], offer: '【APP會員】當月壽星享「鮮嫩炸雞柳定食套餐」買一送一。 (優惠至隔月底)', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '三商炸雞 (高雄裕誠店)', coords: [22.662, 120.306], offer: '【APP會員】當月壽星享「酥炸棒腿」買一送一。 (優惠至隔月底)', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '三商炸雞 (高雄林森店)', coords: [22.628, 120.304], offer: '【APP會員】當月壽星享「酥炸棒腿」買一送一。 (優惠至隔月底)', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '拿坡里 (高雄楠梓店)', coords: [22.723, 120.308], offer: '【APP會員】當月壽星享「重乳酪蛋糕」外帶$250。 (優惠至隔月底)', discount: '蛋糕優惠', isTopDeal: false },
+            { name: '三商巧福 (高雄店)', coords: [22.632, 120.286], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (鼎山店)', coords: [22.657, 120.315], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (明誠店)', coords: [22.660, 120.303], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (岡山店)', coords: [22.794, 120.267], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (草衙店)', coords: [22.593, 120.313], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (高福店)', coords: [22.607, 120.302], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (夢時代店)', coords: [22.595, 120.307], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (光華店)', coords: [22.609, 120.317], offer: '【APP會員】当月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (三多店)', coords: [22.617, 120.314], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (廣州店)', coords: [22.623, 120.320], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (文橫店)', coords: [22.622, 120.303], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (楠梓二店)', coords: [22.735, 120.301], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (楠梓店)', coords: [22.723, 120.309], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (楠梓三店)', coords: [22.729, 120.289], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (鳳福店)', coords: [22.626, 120.354], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (鳳山店)', coords: [22.629, 120.362], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (五甲二店)', coords: [22.601, 120.330], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            // --- [新增] 丸亀製麵 - 高雄 ---
+            { name: '丸亀製麵 (新光三越 - 左營店)', coords: [22.687, 120.309], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (新光三越 - 三多店)', coords: [22.614, 120.305], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (漢神百貨 - 巨蛋店)', coords: [22.669, 120.303], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (大樂購物中心 - 大樂店)', coords: [22.656, 120.316], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (新光三越 - 彩虹市集店)', coords: [22.688, 120.308], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (家樂福 - 成功店)', coords: [22.607, 120.302], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (統一夢時代購物中心 - 統一夢時代店)', coords: [22.595, 120.307], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (SKM Park - SKM Park 高雄店)', coords: [22.593, 120.313], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (秀泰樂購 - 岡山店)', coords: [22.793, 120.282], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (大遠百 - 高雄店)', coords: [22.613, 120.304], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (家樂福 - 楠梓店)', coords: [22.729, 120.289], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+
+            // === 台南地區 ===
+            { name: '王品牛排 (台南建設店)', coords: [22.986, 120.228], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
+            { name: '饗食天堂 (台南西門店)', coords: [22.986, 120.198], offer: 'iEAT會員當月壽星享96折優惠券。', discount: '96折', isTopDeal: false },
+            { name: '漢來海港餐廳 (台南店)', coords: [22.988, 120.230], offer: '當日壽星平日8折、假日85折（加10%服務費）。', discount: '8-8.5折', isTopDeal: false },
+            { name: '陶板屋 (台南勝利店)', coords: [22.990, 120.216], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
+            { name: '西堤牛排 (台南府城店)', coords: [22.996, 120.203], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
+            { name: '鼎泰豐 (台南西門店)', coords: [22.986, 120.198], offer: '壽星當日用餐享免費甜點或折扣。(依門市當日狀況為主)', discount: '免費甜點', isTopDeal: false },
+            { name: '瓦城泰國料理 (台南新光西門店)', coords: [22.986, 120.198], offer: '會員當月壽星享專屬優惠券。', discount: '優惠券', isTopDeal: false },
+            { name: '乾杯燒肉 (台南新光西門店)', coords: [22.986, 120.198], offer: '壽星當月/當日用餐可能贈送免費甜點或飲品。', discount: '免費甜點', isTopDeal: false },
+            { name: '海底撈 (台南Focus店)', coords: [22.994, 120.206], offer: '壽星當日用餐享慶生服務、甜點或小禮物。無固定折扣。', discount: '慶生服務', isTopDeal: false },
+            { name: '肉多多火鍋 (台南仁德店)', coords: [22.956, 120.247], offer: 'APP會員當月壽星享「生日肉蛋糕」一份 (需提前預訂)。', discount: '肉蛋糕', isTopDeal: false },
+            { name: '聚日式鍋物 (台南)', coords: [22.990, 120.210], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
+            { name: '好樂迪KTV (台南)', coords: [22.995, 120.200], offer: '壽星超值選優惠。', discount: '超值選', isTopDeal: false },
+            { name: '甘單作DIY (台南崇德店)', coords: [22.980, 120.205], offer: '当月壽星三人同行壽星免費。', discount: '壽星免費 (100%)', isTopDeal: true, rank: 1 },
+            { name: '台南臺邦商旅', coords: [22.987, 120.215], offer: '邦你過生日壽星獨享住房優惠。', discount: '住房優惠', isTopDeal: false },
+            { name: '薄多義 (台南崇學店)', coords: [22.9825, 120.2241], offer: '当月壽星「幾歲送幾隻雞翅」，需提前3天以上電話預訂，限4人以上(或達低消)。', discount: '雞翅 (100%+)', isTopDeal: true, rank: 2 },
+            { name: '千葉火鍋 (台南西門店)', coords: [23.0042, 120.2030], offer: '当月壽星持「享味卡」享5折優惠，一般會員享85折。', discount: '5折 (需持卡)', isTopDeal: true, rank: 3 },
+            { name: '福勝亭 (台南安平店)', coords: [22.999, 120.184], offer: '【APP會員】當月壽星享「鮮嫩炸雞柳定食套餐」買一送一。 (優惠至隔月底)', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '三商炸雞 (台南崑大店)', coords: [22.998, 120.252], offer: '【APP會員】當月壽星享「酥炸棒腿」買一送一。 (優惠至隔月底)', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '拿坡里 (台南東寧店)', coords: [22.989, 120.223], offer: '【APP會員】當月壽星享「重乳酪蛋糕」外帶$250。 (優惠至隔月底)', discount: '蛋糕優惠', isTopDeal: false },
+            { name: '三商巧福 (台南成功店)', coords: [22.996, 120.203], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (台南店)', coords: [23.007, 120.198], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            
+            // --- [新增] 三商巧福台南新分店 ---
+            { name: '三商巧福 (永康二店)', coords: [23.013, 120.218], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (永康店)', coords: [23.030, 120.230], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (長榮店)', coords: [22.999, 120.219], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (南特店)', coords: [22.999, 120.184], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (仁德店)', coords: [22.940, 120.252], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (永康三店)', coords: [23.023, 120.231], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (新營二店)', coords: [23.310, 120.297], offer: '【APP會員】当月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (新仁店)', coords: [22.951, 120.231], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (新營店)', coords: [23.306, 120.313], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+            { name: '三商巧福 (善化店)', coords: [23.131, 120.291], offer: '【APP會員】當月壽星買指定套餐(原汁牛肉麵+青菜+飲料)送「原汁牛肉麵」。 (優惠至隔月底)', discount: '套餐買一送一', isTopDeal: false },
+
+            // --- [新增] 福勝亭台南新分店 ---
+            { name: '福勝亭 (台南永康店)', coords: [23.023, 120.231], offer: '【APP會員】當月壽星享「鮮嫩炸雞柳定食套餐」買一送一。 (優惠至隔月底)', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '福勝亭 (台南民德店)', coords: [23.007, 120.198], offer: '【APP會員】當月壽星享「鮮嫩炸雞柳定食套餐」買一送一。 (優惠至隔月底)', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '福勝亭 (台南新仁店)', coords: [22.951, 120.231], offer: '【APP會員】當月壽星享「鮮嫩炸雞柳定食套餐」買一送一。 (優惠至隔月底)', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '福勝亭 (台南成大店)', coords: [22.998, 120.218], offer: '【APP會員】當月壽星享「鮮嫩炸雞柳定食套餐」買一送一。 (優惠至隔月底)', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '福勝亭 (台南仁德店)', coords: [22.940, 120.252], offer: '【APP會員】當月壽星享「鮮嫩炸雞柳定食套餐」買一送一。 (優惠至隔月底)', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            
+            // --- [新增] 丸亀製麵 - 台南 ---
+            { name: '丸亀製麵 (新光三越 - 中山店)', coords: [22.993, 120.203], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (新光三越 - 台南西門店)', coords: [22.986, 120.198], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (家樂福 - 安平店)', coords: [22.999, 120.184], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (南紡購物中心 - 南紡購物中心店)', coords: [22.991, 120.231], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
+            { name: '丸亀製麵 (新光三越 - 台南小北門店)', coords: [23.003, 120.200], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 }
+        ];
+
+        // --- 4. 建立圖例 ---
+        const legend = L.control({ position: 'bottomright' });
+        legend.onAdd = function (map) {
+            const div = L.DomUtil.create('div', 'legend');
+            div.innerHTML = `
+                <div style="font-weight: 700; margin-bottom: 10px; font-size: 0.95rem;">圖例說明</div>
+                <div class="legend-item">
+                    <div class="legend-icon" style="font-size: 0;">
+                        <img src="https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png" alt="地圖標示" style="height: 24px; width: auto;">
+                    </div>
+                    <!-- [修改] 更新圖例文字 -->
+                    <div class="legend-text"><strong>優惠餐廳位置</strong><br/>點擊查看詳細資訊</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-icon">⭐</div>
+                     <!-- *** 修改：更新標語 *** -->
+                    <div class="legend-text"><strong>折扣最大</strong><br/>5折、半價或免費 (含條件)</div>
+                </div>
+                <div style="font-size: 0.75rem; color: #666; margin-top: 10px; border-top: 1px solid #ddd; padding-top: 8px;">
+                    💡 提示：優惠資訊以店家當期公告為準，建議訂位前再次確認。
+                </div>
+            `;
+            return div;
+        };
+        legend.addTo(map);
+
+        // --- 5. 將地標加到地圖上 ---
+        locations.forEach(location => {
+            let popupContent = `<h3>${location.name}</h3>`;
+            
+            if (location.isTopDeal) {
+                // *** 修改：移除排名，因為點位太多 ***
+                popupContent += `<h4>⭐ 折扣力度最大</h4>`;
+            }
+            
+            popupContent += `<ul>
+                              <li class="${location.isTopDeal ? 'top-offer' : 'restaurant-offer'}"><strong>折扣：</strong>${location.discount}</li>
+                              <li class="restaurant-offer">${location.offer}</li>
+                            </ul>
+                            <p style="font-size: 0.8rem; color: #777; margin-top: 10px; text-align: right;">*優惠資訊以店家當期公告為準，建議訂位前再次確認。</p>`;
+
+            L.marker(location.coords)
+                .addTo(map)
+                .bindPopup(popupContent);
+        });
+    </script>
+
+</body>
+</html>
