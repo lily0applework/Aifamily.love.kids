@@ -14,8 +14,7 @@
     <meta property="og:description" content="全台最實用的壽星優惠地圖！快速查詢高雄與台南各大餐廳壽星折扣、買一送一與免費好康，由 AI親子成長屋製作。">
     <!-- 注意：這個圖片連結需要是公開可存取的網址 -->
     <meta property="og:image" content="https://aifamily0708.github.io/Aifamily.love.kids/birthday_map_preview.jpg"> 
-    <meta property="og:url" content="https://aifamily0708.github.io/Aifamily.love.kids
-/index.html"> <!-- 建議換成你這個地圖的最終網址 -->
+    <meta property="og:url" content="https://aifamily0708.github.io/Aifamily.love.kids/index.html"> <!-- 建議換成你這個地圖的最終網址 -->
     <meta property="og:type" content="website">
 
     <!-- [修改] 更新標題 -->
@@ -190,7 +189,7 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-5">
             <!-- [修改] 更改標題顏色 -->
             <h1 class="text-2xl sm:text-2xl font-bold text-orange-900 text-center">
-                高雄及台南壽星優惠地圖
+                高雄台南壽星優惠地圖
                 <span class="text-base font-normal text-gray-500 ml-2 align-middle">byAI親子成長屋</span>
             </h1>
         </div>
@@ -314,9 +313,9 @@
             { name: '丸亀製麵 (家樂福 - 楠梓店)', coords: [22.729, 120.289], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
 
             // === 台南地區 ===
-            { name: '王品牛排 (台南建設店)', coords: [22.986, 120.228], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
+            { name: '王品牛排 (台南健康店)', coords: [22.986, 120.203], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
             { name: '饗食天堂 (台南西門店)', coords: [22.986, 120.198], offer: 'iEAT會員當月壽星享96折優惠券。', discount: '96折', isTopDeal: false },
-            { name: '漢來海港餐廳 (台南店)', coords: [22.988, 120.230], offer: '當日壽星平日8折、假日85折（加10%服務費）。', discount: '8-8.5折', isTopDeal: false },
+            { name: '漢來海港餐廳 (台南店)', coords: [22.9911, 120.2311], offer: '當日壽星平日8折、假日85折（加10%服務費）。', discount: '8-8.5折', isTopDeal: false },
             { name: '陶板屋 (台南勝利店)', coords: [22.990, 120.216], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
             { name: '西堤牛排 (台南府城店)', coords: [22.996, 120.203], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
             { name: '鼎泰豐 (台南西門店)', coords: [22.986, 120.198], offer: '壽星當日用餐享免費甜點或折扣。(依門市當日狀況為主)', discount: '免費甜點', isTopDeal: false },
@@ -434,10 +433,10 @@
             }
             
             popupContent += `<ul>
-                                <li class="${location.isTopDeal ? 'top-offer' : 'restaurant-offer'}"><strong>折扣：</strong>${location.discount}</li>
-                                <li class="restaurant-offer">${location.offer}</li>
-                             </ul>
-                             <p style="font-size: 0.8rem; color: #777; margin-top: 10px; text-align: right;">*優惠資訊以店家當期公告為準，建議訂位前再次確認。</p>`;
+                                 <li class="${location.isTopDeal ? 'top-offer' : 'restaurant-offer'}"><strong>折扣：</strong>${location.discount}</li>
+                                 <li class="restaurant-offer">${location.offer}</li>
+                               </ul>
+                               <p style="font-size: 0.8rem; color: #777; margin-top: 10px; text-align: right;">*優惠資訊以店家當期公告為準，建議訂位前再次確認。</p>`;
 
             L.marker(location.coords)
                 .addTo(map)
@@ -448,8 +447,3 @@
 </body>
 
 </html>
-
-
-
-
-
