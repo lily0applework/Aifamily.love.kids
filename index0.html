@@ -228,7 +228,7 @@
                 
                 <!-- 社群分享按鈕 -->
                 <div class="flex items-center space-x-5">
-                    <span class="text-sm text-gray-600 hidden sm:block">追蹤我們粉絲團看更多AI工具應用</span>
+                    <span class="text-sm text-gray-600 hidden sm:block whitespace-nowrap">追蹤我們粉絲團看更多AI工具應用</span>
                     <a href="https://www.facebook.com/profile.php?id=61579308823985" target="_blank" rel="noopener noreferrer" aria-label="Share on Facebook" class="text-gray-400 hover:text-blue-600 transition-colors duration-200">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14C17.17 2.09 16.1 2 15 2c-2.46 0-4 1.4-4 4v2.5H8v4h3v9.5h3V13.5z"></path></svg>
                     </a>
@@ -494,7 +494,7 @@
                                  <li class="${location.isTopDeal ? 'top-offer' : 'restaurant-offer'}"><strong>折扣：</strong>${location.discount}</li>
                                  <li class="restaurant-offer">${location.offer}</li>
                                </ul>
-                               <p style="font-size: 0.8rem; color: #777; margin-top: 10px; text-align: right;">*優惠資訊以店家當期公告為準，建議訂位前再次確認。</p>`;
+                               <p style="font-size: 0.8rem; color: #777; margin-top: 10px; text-align: right; white-space: nowrap;">*優惠資訊以店家當期公告為準，建議訂位前再次確認。</p>`;
                                // [移除] 刪除所有 AI 相關的按鈕和註解
 
             L.marker(location.coords)
