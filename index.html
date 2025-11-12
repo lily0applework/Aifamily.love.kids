@@ -14,7 +14,8 @@
     <meta property="og:description" content="全台最實用的壽星優惠地圖！快速查詢高雄與台南各大餐廳壽星折扣、買一送一與免費好康，由 AI親子成長屋製作。">
     <!-- 注意：這個圖片連結需要是公開可存取的網址 -->
     <meta property="og:image" content="https://aifamily0708.github.io/Aifamily.love.kids/birthday_map_preview.jpg"> 
-    <meta property="og:url" content="https://aifamily0708.github.io/Aifamily.love.kids/index.html"> <!-- 建議換成你這個地圖的最終網址 -->
+    <meta property="og:url" content="https://aifamily0708.github.io/Aifamily.love.kids
+/index.html"> <!-- 建議換成你這個地圖的最終網址 -->
     <meta property="og:type" content="website">
 
     <!-- [修改] 更新標題 -->
@@ -269,7 +270,12 @@
             { name: '鼎泰豐 (高雄巨蛋店)', coords: [22.669, 120.302], offer: '壽星當日用餐享免費甜點或折扣。(依門市當日狀況為主)', discount: '免費甜點', isTopDeal: false },
             { name: '瓦城泰國料理 (高雄夢時代店)', coords: [22.595, 120.307], offer: '會員當月壽星享專屬優惠券。', discount: '優惠券', isTopDeal: false },
             { name: '乾杯燒肉 (高雄中山店)', coords: [22.626, 120.301], offer: '壽星當月/當日用餐可能贈送免費甜點或飲品。', discount: '免費甜點', isTopDeal: false },
-            { name: '海底撈 (高雄巨蛋店)', coords: [22.669, 120.302], offer: '壽星當日用餐享慶生服務、甜點或小禮物。無固定折扣。', discount: '慶生服務', isTopDeal: false },
+            
+            <!-- [修改] 海底撈 高雄漢神巨蛋店 -->
+            { name: '海底撈 (高雄漢神巨蛋店)', coords: [22.669, 120.302], offer: '【當日壽星】消費滿 $1,500 並出示證件，即可領取「生日限定禮包」(提袋/禮物/刮刮卡/零食/明信片)。店員可協助唱生日歌。', discount: '生日限定禮包', isTopDeal: false },
+            <!-- [新增] 海底撈 高雄遠百店 -->
+            { name: '海底撈 (高雄遠百店)', coords: [22.613, 120.304], offer: '【當日壽星】消費滿 $1,500 並出示證件，即可領取「生日限定禮包」(提袋/禮物/刮刮卡/零食/明信片)。店員可協助唱生日歌。', discount: '生日限定禮包', isTopDeal: false },
+
             { name: '肉多多火鍋 (高雄三多店)', coords: [22.614, 120.305], offer: 'APP會員當月壽星享「生日肉蛋糕」一份 (需提前預訂)。', discount: '肉蛋糕', isTopDeal: false },
             { name: 'IKEA (高雄店)', coords: [22.597, 120.306], offer: 'IKEA卡會員當月壽星享「主餐第二道半價」優惠券。', discount: '第二道半價 (約25%)', isTopDeal: false },
             { name: '唐吉訶德 (高雄大立店)', coords: [22.624, 120.297], offer: 'APP會員生日禮「滿額折抵」優惠券 (全台門市適用)。', discount: '滿額折抵', isTopDeal: false },
@@ -277,9 +283,9 @@
             { name: '嗑肉石鍋 (高雄)', coords: [22.640, 120.300], offer: '生日魔法卡享受壽星大餐優惠。', discount: '魔法卡', isTopDeal: false },
             { name: '傑克兄弟牛排館 (高雄)', coords: [22.630, 120.295], offer: '生日牛排半價優惠。', discount: '半價 (50%)', isTopDeal: true, rank: 3 },
             
-            <!-- [修改] 移除通用的聚日式鍋物(高雄)，改為以下特定分店 -->
-            { name: '聚日式鍋物 (高雄富民店)', coords: [22.668, 120.301], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
-            { name: '聚日式鍋物 (高雄夢時代店)', coords: [22.595, 120.307], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
+            <!-- [修改] 聚日式鍋物 (高雄) 分店 -->
+            { name: '聚日式鍋物 (高雄富民店)', coords: [22.666, 120.304], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
+            { name: '聚日式鍋物 (高雄夢時代店)', coords: [22.596, 120.306], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
             { name: '聚日式鍋物 (高雄大樂店)', coords: [22.656, 120.316], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
             { name: '聚日式鍋物 (澄清文衡店)', coords: [22.645, 120.339], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
 
@@ -331,20 +337,25 @@
             { name: '丸亀製麵 (家樂福 - 楠梓店)', coords: [22.729, 120.289], offer: '【當月壽星】出示證件，享「豆皮烏龍麵(中)買一送一」或「素湯烏龍麵(中)買一送一」(2選1)。', discount: '買一送一 (50%)', isTopDeal: true, rank: 3 },
 
             // === 台南地區 ===
-            { name: '王品牛排 (台南健康店)', coords: [22.985, 120.201], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
+            { name: '王品牛排 (台南健康店)', coords: [22.983, 120.198], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
             { name: '饗食天堂 (台南西門店)', coords: [22.986, 120.198], offer: 'iEAT會員當月壽星享96折優惠券。', discount: '96折', isTopDeal: false },
-            { name: '漢來海港餐廳 (台南店)', coords: [22.9911, 120.2311], offer: '當日壽星平日8折、假日85折（加10%服務費）。', discount: '8-8.5折', isTopDeal: false },
+            { name: '漢來海港餐廳 (台南店)', coords: [22.991, 120.2311], offer: '當日壽星平日8折、假日85折（加10%服務費）。', discount: '8-8.5折', isTopDeal: false },
             { name: '陶板屋 (台南勝利店)', coords: [22.990, 120.216], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
             { name: '西堤牛排 (台南府城店)', coords: [22.996, 120.203], offer: '王品會員當月壽星享單客套餐88折優惠券。', discount: '88折', isTopDeal: false },
             { name: '鼎泰豐 (台南西門店)', coords: [22.986, 120.198], offer: '壽星當日用餐享免費甜點或折扣。(依門市當日狀況為主)', discount: '免費甜點', isTopDeal: false },
             { name: '瓦城泰國料理 (台南新光西門店)', coords: [22.986, 120.198], offer: '會員當月壽星享專屬優惠券。', discount: '優惠券', isTopDeal: false },
             { name: '乾杯燒肉 (台南新光西門店)', coords: [22.986, 120.198], offer: '壽星當月/當日用餐可能贈送免費甜點或飲品。', discount: '免費甜點', isTopDeal: false },
-            { name: '海底撈 (台南Focus店)', coords: [22.994, 120.206], offer: '壽星當日用餐享慶生服務、甜點或小禮物。無固定折扣。', discount: '慶生服務', isTopDeal: false },
+            
+            <!-- [修改] 海底撈 台南Focus店 -->
+            { name: '海底撈 (台南Focus店)', coords: [22.994, 120.206], offer: '【當日壽星】消費滿 $1,500 並出示證件，即可領取「生日限定禮包」(提袋/禮物/刮刮卡/零食/明信片)。店員可協助唱生日歌。', discount: '生日限定禮包', isTopDeal: false },
+            <!-- [新增] 海底撈 台南南紡店 -->
+            { name: '海底撈 (台南南紡店)', coords: [22.991, 120.230], offer: '【當日壽星】消費滿 $1,500 並出示證件，即可領取「生日限定禮包」(提袋/禮物/刮刮卡/零食/明信片)。店員可協助唱生日歌。', discount: '生日限定禮包', isTopDeal: false },
+
             { name: '肉多多火鍋 (台南仁德店)', coords: [22.956, 120.247], offer: 'APP會員當月壽星享「生日肉蛋糕」一份 (需提前預訂)。', discount: '肉蛋糕', isTopDeal: false },
             
-            <!-- [修改] 移除通用的聚日式鍋物(台南)，改為以下特定分店 -->
-            { name: '聚日式鍋物 (台南中華西店)', coords: [22.997, 120.180], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
-            { name: '聚日式鍋物 (台南仁德中山店)', coords: [22.956, 120.247], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
+            <!-- [修改] 聚日式鍋物 (台南) 分店 -->
+            { name: '聚日式鍋物 (台南中華西店)', coords: [22.998, 120.178], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
+            { name: '聚日式鍋物 (台南仁德中山店)', coords: [22.940, 120.252], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
             { name: '聚日式鍋物 (台南永康中華店)', coords: [23.010, 120.219], offer: '生日當天享單客單人套餐5折。', discount: '5折 (50%)', isTopDeal: true, rank: 3 },
 
             <!-- [修改] 更新好樂迪KTV 台南分店 -->
@@ -458,10 +469,10 @@
             }
             
             popupContent += `<ul>
-                                 <li class="${location.isTopDeal ? 'top-offer' : 'restaurant-offer'}"><strong>折扣：</strong>${location.discount}</li>
-                                 <li class="restaurant-offer">${location.offer}</li>
-                               </ul>
-                               <p style="font-size: 0.8rem; color: #777; margin-top: 10px; text-align: right;">*優惠資訊以店家當期公告為準，建議訂位前再次確認。</p>`;
+                                <li class="${location.isTopDeal ? 'top-offer' : 'restaurant-offer'}"><strong>折扣：</strong>${location.discount}</li>
+                                <li class="restaurant-offer">${location.offer}</li>
+                             </ul>
+                             <p style="font-size: 0.8rem; color: #777; margin-top: 10px; text-align: right;">*優惠資訊以店家當期公告為準，建議訂位前再次確認。</p>`;
 
             L.marker(location.coords)
                 .addTo(map)
